@@ -362,6 +362,9 @@ pause
 @REM Make a start bat file for Comfy
 setlocal
 
+cd ..
+cd ..
+
 @REM Step 1: Define the path for the new batch file
 set "new_batch_file=Run_Comfyui.bat"
 
@@ -431,8 +434,8 @@ pause
 
 @REM --------------------------------------------------------------------------------------------------
 @REM Installing Comfy Manager rather than faffing around 
-cd ..
-cd custom_nodes
+
+cd ComfyUI\custom_nodes
 
 git clone https://github.com/ltdrdata/ComfyUI-Manager.git
 git clone https://github.com/crystian/ComfyUI-Crystools
