@@ -451,7 +451,7 @@ echo   1. ComfyUI start
 echo   2. Activate the venv for manual input 
 echo   3. Update via git pull
 echo. 
-echo Next Step: Install Comfy Manager and optionally kijai/ComfyUI-HunyuanVideoWrapper
+echo Next Step: Install Comfy Manager and optionally kijai/Wan-HunyuanVideoWrapper
 pause
 
 @REM --------------------------------------------------------------------------------------------------
