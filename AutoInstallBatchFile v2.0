@@ -393,7 +393,7 @@ echo @echo off
 echo cd ComfyUI
 echo call venv\Scripts\activate.bat
 echo echo Venv Activated
-echo .\venv\Scripts\python.exe -s main.py --fast --windows-standalone-build --use-pytorch-cross-attention
+echo .\venv\Scripts\python.exe -s main.py --fast --windows-standalone-build --use-sage-attention
 echo pause
 ) > "%new_batch_file%"
 
