@@ -1,0 +1,48 @@
+cd update
+..\python_embeded\python.exe -s -m pip install --upgrade pip
+..\python_embeded\python.exe -s -m pip install "accelerate >= 1.1.1"
+..\python_embeded\python.exe -s -m pip install "diffusers >= 0.31.0"
+..\python_embeded\python.exe -s -m pip install "transformers >= 4.39.3"
+
+@REM Install Triton
+..\python_embeded\python.exe -s -m pip install https://github.com/woct0rdho/triton-windows/releases/download/v3.2.0-windows.post10/triton-3.2.0-cp312-cp312-win_amd64.whl
+echo.
+echo Triton 3.2 installed
+echo.
+
+@REM Install Requirements for Triton for compiling
+cd ..
+
+@REM Step 1: Set variables
+set "URL=https://github.com/woct0rdho/triton-windows/releases/download/v3.0.0-windows.post1/python_3.12.7_include_libs.zip"
+set "ZIP_FILE=python_libs.zip"
+set "DEST_FOLDER=python_embeded"
+
+@REM Step 2: Download 
+echo Downloading file...
+curl -L "%URL%" -o "%ZIP_FILE%"
+
+@REM Step 3: Extract using tar
+echo Extracting file...
+tar -xf "%ZIP_FILE%" -C "%DEST_FOLDER%"
+
+@REM Step 4: Delete ZIP file after extraction
+echo Cleaning up...
+del "%ZIP_FILE%"
+
+@REM Step 5: Install SageAttention
+@REM cd ComfyUI
+git clone https://github.com/thu-ml/SageAttention
+cd SageAttention
+set MAX_JOBS=4
+..\python_embeded\python.exe -m pip install .
+
+@REM Step 6: Cleaning up SageAttention
+cd ..
+rmdir /s /q SageAttention
+echo Successfully installed SageAttention 2.1.1 and cleared up
+echo. 
+pause
+
+
+exit /b 0
