@@ -1,0 +1,1 @@
+The 2 Autoinstall files are for making automatically downloading/installing a fresh version of Comfy (clone) and making a venv for it, installing its requirements and finally installing Triton and Sageattention .
