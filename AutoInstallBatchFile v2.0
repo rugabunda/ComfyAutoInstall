@@ -361,8 +361,8 @@ cd SageAttention
 set MAX_JOBS=4
 
 
-
-python.exe setup.py install
+python.exe -m pip install .
+@REM Change method of Installation from "python.exe setup.py install"
 
 
 @REM Cleaning up SageAttention
