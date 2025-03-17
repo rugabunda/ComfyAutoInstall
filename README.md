@@ -18,7 +18,9 @@ Performance: Tests with a Portable upgraded to Pytorch 2.8, Cuda 12.8, 35steps w
 5. SageAttn2 + FP16Fast + Teacache + Torch Compile (Inductor, Max Autotune No CudaGraphs) : 6m 53s @ 11.83 s/it
    
 MSi 4090 with 64GB ram on Windows 11
+
 The above are not a commentary on Quality of output at any speed
+
 The torch compile first run is slow as it carries out test, it only gets quicker
 
 **Recommended Software / Settings**
@@ -58,38 +60,67 @@ Using Cuda 12.4 will install a nightly Pytorch 2.7 (can still use SageAttention 
 
 **Instructions for Portable Version - use a new empty, freshly unzipped portable version . Choice of Triton and SageAttention versions, can also be used on the Nightly Comfy for the 5000 series :**
 Download Script & Save as Bat :
+
 Download the lastest Comfy Portable (currently v0.3.26) : https://github.com/comfyanonymous/ComfyUI
+
 Save the script (linked aboce) as a bat file and place it in the same folder as the run_gpu bat file
+
 Start via the new run_comfyui_fp16fast_cage.bat  file - double click (not CMD)
+
 Let it update itself and fully fetch the ComfyRegistry data
+
 Close it down
+
 Restart it
+
 Manually update it and its Pythons dependencies from that bat file in the Update folder
+
 Note: it changes the Update script to pull from the Nightly versions
+
 Note: I can't guarantee it works with a a 5000 series card, as I don't have one
 
+
 **Instructions to make a new Cloned Comfy with Venv and choice of Python, Triton and SageAttention versions.**
+
 Download Script & Save as Bat :
+
 Save the script linked as a bat file and place it in the folder where you wish to install it
+
 Start via the new run_comfyui_fp16fast_cage.bat  file - double click (not CMD)
+
 Let it update itself and fully fetch the ComfyRegistry data
+
 Close it down
+
 Restart it
+
 Manually update it from that Update bat file
 
+
 **Why Won't It Work ?**
+
 The scripts were built from manually carrying out the steps - reasons that it'll go tits up on the Sage compiling stage -
+
 Winging it
 Not following instructions / prerequsities / Paths
+
 Cuda in the install does not match your Pathed Cuda, Sage Compile will fault
+
 SetupTools version is too high (I've set it to v70.2, it should be ok up to v75.8.2)
+
 Version updates - this stopped the last scripts from working if you updated, I can't stop this and I can't keep supporting it in that way. I will refer to this when it happens and this isn't read.
+
 No idea about 5000 series - use the Comfy Nightly 
 
+
 **Where do they download from ?**
+
 Triton wheel for Windows > https://github.com/woct0rdho/triton-windows
+
 SageAttention > https://github.com/thu-ml/SageAttention
+
 Torch > https://pytorch.org/get-started/locally/
+
 Libraries for Triton > https://github.com/woct0rdho/triton-windows/releases/download/v3.0.0-windows.post1/python_3.12.7_include_libs.zip These files are usually located in Python folders but this is for portable install.
 
 Below : Location of FP16Fast
