@@ -23,18 +23,31 @@ The torch compile first run is slow as it carries out test, it only gets quicker
 
 **Recommended Software / Settings**
 On the Cloned version - choose Nightly to get the new Pytorch (not much point otherwise)
+
 Cuda 12.6 or 12.8 with the Nightly Pytorch 2.7/8 , Cuda 12.4 works but no FP16Fast
+
 Python 3.12.x
+
 Triton (Stable)
+
 SageAttention2
+
 Prerequisites - note recommended above
+
 I previously posted scripts to install SageAttention for Comfy portable and to make a new Clone version. Read them for the pre-requisites.
+
 https://www.reddit.com/r/StableDiffusion/comments/1iyt7d7/automatic_installation_of_triton_and/
+
 https://www.reddit.com/r/StableDiffusion/comments/1j0enkx/automatic_installation_of_triton_and/
+
 You will need the pre-requisites ...
+
 MSVC installed and Pathed,
+
 Cuda Pathed
+
 Python 3.12.x (no idea if other versions work)
+
 Pics for Paths : https://github.com/Grey3016/ComfyAutoInstall/blob/main/README.md
 
 **Important Notes on Pytorch 2.7 and 2.8**
