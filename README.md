@@ -1,4 +1,17 @@
-The 2 Comfy Autoinstall files are for making automatically downloading/installing a fresh version of Comfy (clone) and making a venv for it, installing its requirements and finally installing Triton and Sageattention .
+The 2x version 4 scripts are for 
+
+1. Converting an empty/new Comfy Portable install to one with Triton 2 and Sage 2 within it to make videos as quickly as possible
+2. Making a brand new cloned version of Comfy, making a venv within and install Triton 2 and Sage 2
+
+   As the scripts are run, checks are made (done my best to idiot proof them)
+   As they progress, they will give you choices - Python to install, Pytorch stable or Nightly, Triton version, Sage Attention version.
+   As each part installs, it will delete the folder it used to give a clean install.
+   At the end of each script, it will make bat files to run and update the install
+
+
+
+
+
 
 
 The 2 v4 files are for making Nightly installs to allow the use of FP16Fast - one for making a new cloned Comfy and the other to install a new Torch into an empty portable Comfy. 16.03.25
