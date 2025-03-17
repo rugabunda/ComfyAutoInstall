@@ -12,10 +12,6 @@ The 2x version 4 scripts are for
 
 
 
-
-
-The 2 v4 files are for making Nightly installs to allow the use of FP16Fast - one for making a new cloned Comfy and the other to install a new Torch into an empty portable Comfy. 16.03.25
-
 Below : Location of FP16Fast
 
 ![image](https://github.com/user-attachments/assets/7c198e64-739f-4023-9eff-f74bd27eccda)
