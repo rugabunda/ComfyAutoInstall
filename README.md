@@ -102,7 +102,7 @@ Manually update it from that Update bat file
 The scripts were built from manually carrying out the steps - reasons that it'll go tits up on the Sage compiling stage -
 
 Winging it
-Not following instructions / prerequsities / Paths
+Not following instructions / prerequisites / Paths
 
 Cuda in the install does not match your Pathed Cuda, Sage Compile will fault
 
