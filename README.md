@@ -139,7 +139,7 @@ Below : Cuda version and location settings
 
 ![image](https://github.com/user-attachments/assets/b26e1c7a-991a-4bc1-9d7f-b3114d0badca)
 
-Below : Path set for CL.exe (Compiler in MSVC) , not needed to link the exe but I prefer it this way (see it in the list in the above pic)
+Below : Path set for CL.exe (Compiler in MSVC) , not needed to link the exe but I prefer it this way (see it in the list in the above pic). The script has been updated as if cl.exe isn't added in this way, the script can fail. I have amended the script (now v42 in the Clone script) to now look in the Paths for cl.exe rather thank looking for cl.exe as a direct FilePath. 
 
 ![image](https://github.com/user-attachments/assets/ad071e43-9d4d-40f7-ab4f-d9c2620e0d66)
 
