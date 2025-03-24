@@ -2,11 +2,7 @@
 setlocal
 
 echo.
-echo   V4.2 Automatic Cloned Comfy Install with Pytorch , Triton and Sage 2 installation script 
-echo This is for making a new cloned ComfyUI and installing Pytorch (Stable 2.6 and Nightly 2.7 or 2.8)
-echo   It will install Pytorch 2.7 (Nightly) with Cuda 2.4 or Pytorch 2.8 (Nightly) with Cuda 2.6 or 2.8.
-echo   NB If you want to use FastFP16 (extra ~10 percent), you will need Cuda 12.6 or 12.8 installed.
-echo   NB Sage2 will work on its own with Pytorch 2.7 or 2.8 with Cudas 2.4, 2.6 or 2.8 .
+echo   V1.1 Automatic Desktop Comfy Install with Pytorch 2.8 , Triton 2 and Sage 2 installation script 
 echo.
 
 echo Checking if Visual Studio Build Tools (cl.exe) is in PATH.
