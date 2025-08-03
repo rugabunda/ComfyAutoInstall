@@ -1,3 +1,5 @@
+I made a version of your v4.2 script that uses conda instead of venv; just activate your conda env before running, thats it.
+
 @echo off
 setlocal
 
@@ -36,116 +38,55 @@ if %found_cl% equ 0 (
 
 :end_check
 
-
 endlocal
 
 echo CL.exe check passed successfully.
 echo.
-echo Next step: Install Comfy and a Venv for it
 
 @REM ------------------------------------------------------------------------------------------------
-@REM Installing ComfyUI and a Venv within it
-echo Installing ComfyUI, installing a Venv within it - choose your Python for it
+@REM Check if we're in a conda environment
+if "%CONDA_DEFAULT_ENV%"=="" (
+    echo ERROR: Not in a conda environment. Please activate your conda environment first.
+    pause
+    exit /b 1
+)
+
+echo Using conda environment: %CONDA_DEFAULT_ENV%
+@REM Store the environment name for later use
+set "CURRENT_ENV_NAME=%CONDA_DEFAULT_ENV%"
+
+@REM Get conda activation path from CONDA_EXE
+set "CONDA_ACTIVATE=%CONDA_EXE:conda.exe=activate.bat%"
+echo Found conda at: %CONDA_EXE%
+echo Next step: Install ComfyUI
+
+@REM ------------------------------------------------------------------------------------------------
+@REM Installing ComfyUI
+echo Installing ComfyUI...
 
 git clone https://github.com/comfyanonymous/ComfyUI
 cd ComfyUI
 setlocal enabledelayedexpansion
 
 echo.
-echo From Comfy github page: "Python 3.13 is supported but using 3.12 is recommended because some custom nodes and their dependencies might not support it yet."
-echo.
-
-@REM Step 1: Locate Python installations
-set "PYTHON_DIR=C:\Users\%USERNAME%\AppData\Local\Programs\Python"
-if not exist "%PYTHON_DIR%" (
-    echo No Python installations found in %PYTHON_DIR%.
-    exit /b
-)
-
-echo Scanning available Python installations...
-
-@REM Step 2: Find installed Python versions
-set INDEX=0
-for /d %%D in ("%PYTHON_DIR%\Python*") do (
-    set /a INDEX+=1
-    set "PYTHON_PATHS[!INDEX!]=%%D\python.exe"
-    set "PYTHON_BASE[!INDEX!]=%%D"
-    echo !INDEX!. %%D
-)
-
-if "%INDEX%"=="0" (
-    echo No Python installations found.
-    exit /b
-)
-
-@REM Step 3: Prompt user to select a Python version
-set /p CHOICE=Enter the number of the Python version to use for venv: 
-
-if not defined PYTHON_PATHS[%CHOICE%] (
-    echo Invalid selection.
-    exit /b
-)
-
-set "SELECTED_PYTHON=!PYTHON_PATHS[%CHOICE%]!"
-set "SELECTED_BASE=!PYTHON_BASE[%CHOICE%]!"
-
-@REM Step 4: Create a new virtual environment
-set VENV_NAME=venv
-
-
-echo Creating virtual environment "%VENV_NAME%" using %SELECTED_PYTHON%...
-%SELECTED_PYTHON% -m venv %VENV_NAME%
-
-if not exist "%VENV_NAME%" (
-    echo Failed to create virtual environment.
-    exit /b
-)
-
-@REM Step 5: Copy Include and Libs folders to the Venv (Triton)
-echo Copying Include and Libs folders from %SELECTED_BASE% to %VENV_NAME%...
-xcopy /E /I /Y "%SELECTED_BASE%\Include" "%VENV_NAME%\Include"
-xcopy /E /I /Y "%SELECTED_BASE%\libs" "%VENV_NAME%\libs"
-
-xcopy /E /I /Y "%SELECTED_BASE%\vcruntime140.dll" "%VENV_NAME%\Scripts\"
-xcopy /E /I /Y "%SELECTED_BASE%\vcruntime140_1.dll" "%VENV_NAME%\Scripts\"
-
-echo Virtual environment "%VENV_NAME%" created successfully!
-echo Include, libs folders and VCRuntime DLL's copied.
-
-call venv\Scripts\activate.bat
-if errorlevel 1 (
-    echo Failed to activate virtual environment.
- 	pause
-    exit /b 1
-)
-
-python -m pip install --upgrade pip
-
-echo.
-echo Venv Activated and Checked
+echo ComfyUI cloned successfully!
 echo Next step: Install PyTorch
 echo.
 pause
 
-
-
 @REM -------------------------------------------------------------------------------------------------
-@REM Installing packages for the Venv and requirements for SageAttention including Pytorch
+@REM Installing packages for the conda env and requirements for SageAttention including Pytorch
 setlocal enabledelayedexpansion
 
-
-@REM -------------------------------------------------------------------------------------------------
-
-@REM Checking for installled Cuda version and installing latest relevant Pytorch for it
-@REM setlocal enabledelayedexpansion command in a batch script is used to enable delayed variable expansion, which allows you to use variables with their values updated at execution time rather than at parse time.
+@REM Checking for installed Cuda version and installing latest relevant Pytorch for it
 setlocal enabledelayedexpansion
 
 @REM Step 1: Get the CUDA version using nvcc --version
- for /f "tokens=5 delims= " %%A in ('nvcc --version ^| findstr /C:"release"') do (
+for /f "tokens=5 delims= " %%A in ('nvcc --version ^| findstr /C:"release"') do (
     for /f "tokens=1 delims=," %%B in ("%%A") do set cuda_version=%%B
 )
 
-@REM Stp 2: Extract major version
+@REM Step 2: Extract major version
 for /f "tokens=1 delims=." %%a in ("%cuda_version%") do set cuda_major=%%a
 
 @REM Step 3: Extract minor version
@@ -157,10 +98,8 @@ echo.
 echo Detected CUDA Version: %cuda_version%
 echo.
 
-
 @REM Step 4: Remove the dot from CUDA version (convert v12.8 → 128)
 set "CLEAN_CUDA=%cuda_version:.=%"
-
 
 @REM Step 5: Set PyTorch URLs
 set "STABLE_URL=https://download.pytorch.org/whl/cu%CLEAN_CUDA%"
@@ -190,7 +129,7 @@ if "%CHOICE%"=="1" (
     set "PYTORCH_URL=%STABLE_URL%"
 )
 
-@REM Step 7: Install PyTorch
+@REM Step 7: Install PyTorch (we're already in the conda env)
 echo.
 echo Installing PyTorch %PYTORCH_BUILD% with CUDA %cuda_version%...
 echo.
@@ -203,7 +142,6 @@ if "%PYTORCH_BUILD%"=="Stable" (
 
 echo PyTorch %PYTORCH_BUILD% installation complete.
 
-
 @REM Step 8: Verify installation
 echo.
 echo Verifying PyTorch installation...
@@ -212,7 +150,7 @@ echo.
 python -c "import torch; print(f'PyTorch Version: {torch.__version__}, CUDA Available: {torch.cuda.is_available()}, CUDA Version: {torch.version.cuda}')" 
 if !errorlevel! NEQ 0 (
     echo.
-    echo PyTorch installation failed. Please check for errors above line 168.
+    echo PyTorch installation failed. Please check for errors above.
     pause
     exit /b
 )
@@ -221,10 +159,7 @@ echo PyTorch installation complete and checked
 echo Next Step: Install the rest of the requirements
 pause
 
-
-
-@REM Step 9: Install the rest of the requirements for the Venv, Triton and SageAttention
-
+@REM Step 9: Install the rest of the requirements
 pip install -r requirements.txt
 pip install onnxruntime-gpu
 pip install wheel
@@ -236,8 +171,6 @@ pip install "diffusers >= 0.31.0"
 pip install "transformers >= 4.39.3"
 pip install "setuptools == 70.2.0"
 python -m ensurepip --upgrade
-@REM python -m pip install --upgrade setuptools
-
 
 echo.
 echo Successfully installed Requirements
@@ -246,7 +179,7 @@ echo.
 pause
 
 @REM --------------------------------------------------------------------------------------------------
-@REM Install Triton Wheel for Triton & install
+@REM Install Triton
 setlocal enabledelayedexpansion
 
 @REM Ask which version of Triton to install
@@ -302,8 +235,6 @@ pause
 @REM Install SageAttention
 
 echo Choose which version of SageAttention to install:
-@REM echo SageAttention v1 (compatible with python>=3.9, torch>=2.3.0, triton>=2.3.0)
-@REM echo SageAttention v2 (compatible with python>=3.9 , torch>=2.3.0 , triton>=3.0.0, CUDA:>=12.8 for Blackwell, >=12.4 for fp8 support on Ada, >=12.3 for fp8 support on Hopper, >=12.0 for Ampere)
 echo.
 echo [1] SageAttention v1
 echo [2] SageAttention v2
@@ -311,15 +242,12 @@ set /p choice="Enter your choice (1 or 2): "
 
 if "%choice%"=="1" (
     echo Installing SageAttention v1...
-    cd venv
     pip install sageattention==1.0.6
-    cd ..
     echo Successfully installed SageAttention v1.
     echo.
     pause
 ) else if "%choice%"=="2" (
     echo Installing SageAttention v2...
-    cd venv
     git clone https://github.com/thu-ml/SageAttention
     cd SageAttention
     set MAX_JOBS=4
@@ -341,7 +269,6 @@ setlocal
 
 @REM cd .. to get to ComfyUI folder and install scripts
 cd ..
-cd ..
 
 @REM Step 1: Define the path for the new batch file
 set "new_batch_file=run_comfyui_fp16fast_sage.bat"
@@ -349,10 +276,10 @@ set "new_batch_file=run_comfyui_fp16fast_sage.bat"
 @REM Step 2: Create the new Comfy startup batch file
 (
 echo @echo off
-echo cd ComfyUI
-echo call venv\Scripts\activate.bat
-echo echo Venv Activated
-echo .\venv\Scripts\python.exe -s main.py --windows-standalone-build --use-sage-attention --fast fp16_accumulation
+echo cd /d "%%~dp0"
+echo set "CONDA_ACTIVATE=%%CONDA_EXE:conda.exe=activate.bat%%"
+echo call "%%CONDA_ACTIVATE%%" %CURRENT_ENV_NAME%
+echo python ComfyUI\main.py --windows-standalone-build --use-sage-attention --fast fp16_accumulation --disable-auto-launch
 echo pause
 ) > "%new_batch_file%"
 
@@ -370,10 +297,10 @@ set "new_batch_file1=run_comfyui_sage.bat"
 @REM Step 2: Create the new Comfy startup batch file
 (
 echo @echo off
-echo cd ComfyUI
-echo call venv\Scripts\activate.bat
-echo echo Venv Activated
-echo .\venv\Scripts\python.exe -s main.py --windows-standalone-build --use-sage-attention --fast
+echo cd /d "%%~dp0"
+echo set "CONDA_ACTIVATE=%%CONDA_EXE:conda.exe=activate.bat%%"
+echo call "%%CONDA_ACTIVATE%%" %CURRENT_ENV_NAME%
+echo python ComfyUI\main.py --windows-standalone-build --use-sage-attention --fast --disable-auto-launch
 echo pause
 ) > "%new_batch_file1%"
 
@@ -385,16 +312,17 @@ if exist "%new_batch_file1%" (
 )
 
 @REM --------------------------------------------------------------------------------------------------
-@REM Create a batch file to auto open a CMD window and activate the Venv
+@REM Create a batch file to auto open a CMD window and activate the conda env
 @REM Step 1: Define the path for the new batch file
-set "new_batch_file2=Activate_Venv.bat"
+set "new_batch_file2=Activate_Conda_Env.bat"
 
 @REM Step 2: Create the new batch file with the specified content
 (
 echo @echo off
-echo cd ComfyUI\venv
-echo call .\Scripts\activate.bat
-echo echo Venv Activated
+echo set "CONDA_ACTIVATE=%%CONDA_EXE:conda.exe=activate.bat%%"
+echo call "%%CONDA_ACTIVATE%%" %CURRENT_ENV_NAME%
+echo cd /d "%%~dp0"
+echo echo Conda environment %CURRENT_ENV_NAME% activated
 echo cmd.exe /k
 ) > "%new_batch_file2%"
 
@@ -429,7 +357,7 @@ echo.
 echo Four bat files saved to install folder 
 echo   1. ComfyUI start with Sage and fp16Fast
 echo   2. ComfyUI start with Sage 
-echo   3. Activate the venv for manual input 
+echo   3. Activate the conda environment for manual input 
 echo   4. Update via git pull
 echo. 
 echo Next Step: Install Comfy Manager
@@ -443,7 +371,6 @@ cd ComfyUI\custom_nodes
 git clone https://github.com/ltdrdata/ComfyUI-Manager.git
 
 echo Successfully cloned ComfyUI-Manager
-
 
 echo.
 echo Copy across your extra_model_paths.yaml file and start ComfyUI.
